@@ -5,13 +5,14 @@
 \author{Marten Heidemeyer\\mheideme@sfu.ca}
 \date{\today}
 \usepackage[font=small,labelfont=bf]{caption}
+\renewcommand{\bibname}{References}
+\let\endtitlepage\relax
 \begin{document}
 \maketitle
 \section{Motivation and Application Background}
-0.5 pages
-My own application of the method. Also talk about the extra work I did (reproducing the experiments and adding extra measures).
+This project focuses on estimating the degree of \textit{connectivity} of triangles in a large graph. As the \textit{connectivity} of a triangle in a graph I define the number of nodes that are directly reachable from any of the three triangle nodes. In this work I estimate the degree of connectivity of the triangle population in a graph from a simple random sample. The paper \cite{countsample} presents a method to count and sample triangles from a graph stream. In their experiments the authors of \cite{countsample} focus on the \textit{counting} aspect of the method. The motivation for this course project is to apply and evaluate the \textit{sampling} aspect of the presented method.
 \section{Background}
-Triangles can be a more or less important structure of a graph. If many nodes are reachable from those nodes that are forming a triangle this triangle is important to connect the remaining nodes. In this case the triangle is serving as a hub for the nodes around it. Removing the nodes that form the triangle or the edges between them would disconnect a large part of the graph. The importance of one triangle can be calculated as the number of nodes that are adjacent to it. Let this sum be defined as the \textit{connectivity} of a triangle. Figure 1 shows a graph with three triangles with \textit{connectivity} 15, 14 and 10. The average \textit{connectivity} of triangles in this graph is $\frac{15+14+10}{3}=13$. If we want to find the average \textit{connectivity} of triangles in a large scale graph it makes sense to sample a number of triangles and observe the \textit{connectivity} of the sampled triangles. In this report I document the application of the \textit{Neighborhood Sampling} method as introduced in the paper "Counting and Sampling Triangles from a Graph Stream" to estimate the average connectivity of the overall population of triangles in the graph. Here I will limit the experiments to triangles for which the adjacent nodes are distributed evenly across the three nodes of the triangle as in the graph of Figure 1.
+Triangles can be a more or less important structure of a graph. If many nodes are reachable from those nodes that are forming a triangle this triangle is important to connect the remaining nodes. In this case the triangle is serving as a hub for the nodes around it. Removing the nodes that form the triangle or the edges between them would disconnect a large part of the graph. The importance of one triangle can be calculated as the number of nodes that are adjacent to it. Let this sum be defined as the \textit{connectivity} of a triangle. Figure 1 shows a graph with three triangles with \textit{connectivity} 15, 14 and 10. The average \textit{connectivity} of triangles in this graph is $\frac{15+14+10}{3}=13$. If we want to find the average \textit{connectivity} of triangles in a large scale graph it makes sense to sample a number of triangles and observe the \textit{connectivity} of the sampled triangles. In this report I document the application of the \textit{Neighborhood Sampling} method as introduced in \cite{countsample} to estimate the average connectivity of the overall population of triangles in the graph. Here I will limit the experiments to triangles for which the adjacent nodes are distributed evenly across the three nodes of the triangle as in the graph of Figure 1.
  
 \begin{figure}
 \begin{tikzpicture}[scale=0.4]
@@ -146,7 +147,7 @@ The estimators from which the triangles are being sampled are first sampling a r
 In my experiments I use the counter $c$ to estimate the \textit{connectivity} of a triangle as follows: For each estimator that is returning a triangle into my sample I estimate the total number of adjacent nodes to this triangle as $((c-2)\frac{4}{3})\times\frac{3}{2}$. The term $(c-2)$ is the number of $r_1$-adjacent edges that were observed in the stream after $r_1$ excluding the two edges that belong to the triangle ($r_2$ and $r_3$). The term $(c-2)\frac{4}{3}$ represents the $(c-2)$ edges that are adjacent to $r_1$ and arrived after $r_1$ in the stream \textit{plus} the expected number of edges that arrived in the stream before $r_1$ (the expected number of $r_1$ adjacent edges that arrived before $r_1$ is $\frac{1}{3}(c-2)$). Thus the term $((c-2)\frac{4}{3})$ represents the number of edges that are adjacent to the $r_1$ edge of the triangle. The edge $r_1$ represents two nodes of the triangle. My estimate for the number of edges that are adjacent to the third node of the triangle is $\frac{1}{2}((c-2)\frac{4}{3})$, because I am assuming that the number of adjacent nodes are equally distributed among the three triangle nodes. The total number of adjacent edges to this triangle is then $((c-2)\frac{4}{3})\times\frac{3}{2}$.
 \section{Experimental Results}
 \subsection{Method Implementation}
-First I implemented the method from the paper and verified that my implementation is correct by reproducing the experiments from the paper with the same datasets which I downloaded from https://snap.stanford.edu/data. To verify my implementation I downloaded the amazon, dblp and livejournal graphs and got similar results as the authors of the paper. Further I downloaded a Protein-Protein-Interaction Network from http://thebiogrid.org/ and ran the method on this dataset. In addition to the number of triangles that was estimated by the method, I noted the number of triangles that I was able to sample from the chosen number of estimators as listed in Table 1. 
+First I implemented the method from the paper and verified that my implementation is correct by reproducing the experiments from the paper with the same datasets which I downloaded from \cite{stan}. To verify my implementation I downloaded the amazon, dblp and livejournal graphs and got similar results as the authors of the paper. Further I downloaded a Protein-Protein-Interaction Network from \cite{biogrid} and ran the method on this dataset. Additionally to comparing the triangle count I got from my implementation with the experiment results in \cite{countsample}, I noted the number of triangles that I was able to sample from the chosen number of estimators as listed in Table 1. 
 \begin{center}
 \begin{table}
 \resizebox{\textwidth}{!}{
@@ -157,7 +158,7 @@ Amazon, $\tau=667129$ & $\tau_{est}=710143$, $s=1$&$\tau_{est}=653875$, $s=91$ &
 DBLP, $\tau = 2224385$ & $\tau_{est}=2392644$, $s=3$&$\tau_{est}=2221672$, $s=374$  & $\tau_{est}=2220412$, $s=2863$
 \end{tabular}
 }
-\caption{}
+\caption{This table lists the triangle count my implementation estimated ($\tau_{est}$) for the graphs I downloaded from \cite{stan} and \cite{biogrid}. Because the triangle count estimation $\tau_{est}$ I got from my implementation agrees with the results in \cite{countsample} I can be confident that my implementation of the method is bug free.  Additionally this table lists the number of triangles that I could draw from the estimators $s$ which was not evaluated in the paper.}
 \end{table}
 \end{center}
 \subsection{Testing of the method on simulated graphs}
@@ -188,4 +189,5 @@ $\tau, a \Rightarrow \mu, v$ &$e=10000$&$e=100000$&$e=1000000$\\
 \end{center}
 \section{Conclusion and Discussion}
 0.5 page
+\include{references}
 \end{document}
