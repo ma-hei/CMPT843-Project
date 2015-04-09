@@ -25,7 +25,7 @@ public class ShuffleEdgeStream {
 		
 		try {
 			
-			in = new BufferedReader (new FileReader("graph1"));
+			in = new BufferedReader (new FileReader("random_graph"));
 			String temp;
 			temp=in.readLine();
 			counter++;
@@ -47,7 +47,7 @@ public class ShuffleEdgeStream {
 			    allEdges.set(randomPosition, temp2);
 			}
 			
-			PrintWriter writer = new PrintWriter("graph1_shuffled", "UTF-8");
+			PrintWriter writer = new PrintWriter("random_graph_shuffled", "UTF-8");
 			
 			for (String s : allEdges){
 				

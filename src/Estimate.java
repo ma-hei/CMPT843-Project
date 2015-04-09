@@ -107,7 +107,7 @@ public class Estimate {
 	
 	public Triangle sampleT(){
 		Random rand = new Random();
-		Integer randomnumber = rand.nextInt(2*41093)+1;
+		Integer randomnumber = rand.nextInt(2*14815)+1;
 		
 		if (randomnumber<=this.c){
 			return this.t;

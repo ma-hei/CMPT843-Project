@@ -3,6 +3,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 
@@ -11,7 +12,7 @@ public class CountAndSample {
 	long estimateTriangle;
 	graphGenerator generator;
 	GraphReader graphReader;
-	//BiogridFileInspector graphReader = new BiogridFileInspector();
+//	BiogridFileInspector graphReader = new BiogridFileInspector();
 	//ccsbHandler graphReader = new ccsbHandler();
 	//CCSBFileInspector graphReader = new CCSBFileInspector();
 	Estimate estimate[];
@@ -35,7 +36,7 @@ public class CountAndSample {
 		//ShuffleEdgeStream doit = new ShuffleEdgeStream();
 		//doit.doit();
 		graphReader = new GraphReader();
-		//graphReader = new BiogridFileInspector();
+//		graphReader = new BiogridFileInspector();
 		//graphReader = new CCSBFileInspector();
 		//graphReader = new ccsbHandler();
 		this.bulk = new Edge[batchsize];
@@ -361,7 +362,7 @@ public class CountAndSample {
 		}
 		
 		
-		System.out.println("estimates with missing edge: "+missingCounter);
+//		System.out.println("estimates with missing edge: "+missingCounter);
 //		for (int i=0;i<batchsize;i++){
 //			Edge e = bulk[i];
 //			if (e!=null){
@@ -471,7 +472,7 @@ public class CountAndSample {
 		long numberEstLong = (long)numberEstimators;
 		sum=sum/numberEstLong;
 		answer=(float)estimateTriangle/sum;
-		//answer=answer*3;
+		answer=answer*3;
 		System.out.println("this other measure: "+answer);
 	}
 
@@ -479,17 +480,35 @@ public class CountAndSample {
 		
 		Triangle temp;
 		ArrayList<Triangle> list = new ArrayList<Triangle>();
+		ArrayList<Estimate> list2 = new ArrayList<Estimate>();
+//		HashMap<Triangle,Integer> list2 = new HashMap<Triangle, Integer>();
+		int otheraverage=0;
 		for (Estimate e: estimate){
 			
 			temp = e.sampleT();
 			if (temp!=null){
 				list.add(temp);
+				list2.add(e);
+				//e.print();
+				//System.out.println("this c value: "+(e.c*1.5));
+				otheraverage+=(((e.c-2+(e.c-2)*0.33))*1.5);
+				//System.out.println("--> "+(((e.c-2+(e.c-2)*0.33))*1.5));
+				//otheraverage+=);
 			}
 			
 		}
-		System.out.println(list.size());
+		otheraverage = otheraverage/list.size();
+		System.out.println("got "+list.size()+" triangles");
+		System.out.println("this weird measure: "+otheraverage);
+		int variance=0;
+		
+		for (Estimate e : list2){
+			variance+=(otheraverage-(((e.c-2+(e.c-2)*0.33))*1.5))*(otheraverage-(((e.c-2+(e.c-2)*0.33))*1.5));
+		}
+		System.out.println("this weird variance: "+variance/list2.size());
+		
 		try {
-			PrintWriter writer = new PrintWriter("sample31", "UTF-8");
+			PrintWriter writer = new PrintWriter("sample_random", "UTF-8");
 			writer.write(list.size()+"\n");
 			int point1;
 			int point2;
